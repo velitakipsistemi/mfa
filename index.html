@@ -4,186 +4,760 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Öğrenci Bilgi Sistemi</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      text-align: center;
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    :root {
+      --primary: #3498db;
+      --primary-dark: #2980b9;
+      --secondary: #f39c12;
+      --secondary-dark: #e67e22;
+      --success: #2ecc71;
+      --warning: #f1c40f;
+      --danger: #e74c3c;
+      --light: #ecf0f1;
+      --dark: #2c3e50;
+      --gray: #95a5a6;
+      --text: #333333;
+    }
+    
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      background-color: #f5f5f5;
-      color: #2C3E50;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--text);
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
       min-height: 100vh;
-      box-sizing: border-box;
+      padding: 20px;
+      line-height: 1.6;
     }
+    
     .container {
       background-color: #ffffff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      max-width: 800px;
-      width: 95%;
-      box-sizing: border-box;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      max-width: 900px;
+      width: 100%;
+      position: relative;
       overflow: hidden;
     }
-    h1 {
-      color: #2C3E50;
-      font-size: 24px;
-      margin-bottom: 15px;
+    
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
     }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+    
+    .logo i {
+      font-size: 36px;
+      color: white;
+    }
+    
+    .header h1 {
+      color: var(--dark);
+      font-size: 32px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    
+    .header p {
+      color: var(--gray);
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .input-card {
+      background-color: #f8f9fa;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .input-group {
+      display: flex;
+      margin-bottom: 0;
+      position: relative;
+    }
+    
+    .input-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      z-index: 1;
+    }
+    
     input[type="text"] {
-      padding: 12px;
+      padding: 18px 18px 18px 50px;
       font-size: 16px;
       width: 100%;
-      margin-bottom: 15px;
-      border: 1px solid #cccccc;
-      border-radius: 6px;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-      box-sizing: border-box;
+      border: 2px solid #e6e6e6;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+      background-color: white;
     }
+    
+    input[type="text"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+      outline: none;
+    }
+    
     button {
-      padding: 12px;
+      padding: 18px 25px;
       font-size: 16px;
-      background-color: #F39C12;
+      background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
-      width: 100%;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 12px;
+      min-width: 150px;
+      box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3);
     }
-    button:hover { background-color: #e67e22; }
-    .result-table {
-      margin-top: 20px;
-      width: 100%;
-      border-collapse: collapse;
-      border: 1px solid #eeeeee;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      border-radius: 6px;
-      overflow: hidden;
+    
+    button:hover {
+      background: linear-gradient(135deg, var(--secondary-dark), #d35400);
+      transform: translateY(-3px);
+      box-shadow: 0 7px 18px rgba(230, 126, 34, 0.4);
     }
-    .result-table th, .result-table td {
-      padding: 8px;
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button i {
+      margin-right: 10px;
+    }
+    
+    .loading {
       text-align: center;
-      font-size: 14px;
-      height: 45px;
+      padding: 40px;
+      display: none;
     }
-    .result-table th {
-      background-color: #2C3E50;
+    
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 5px solid rgba(52, 152, 219, 0.2);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .student-info {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: white;
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      display: flex;
+      align-items: center;
+    }
+    
+    .student-avatar {
+      width: 70px;
+      height: 70px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 20px;
+      flex-shrink: 0;
+    }
+    
+    .student-avatar i {
+      font-size: 32px;
+    }
+    
+    .student-details h3 {
+      font-size: 24px;
+      margin-bottom: 8px;
       font-weight: 600;
     }
-    .result-table tr:nth-child(even) { background-color: #f9f9f9; }
-    .footer {
-      margin-top: 20px;
-      font-size: 12px;
-      color: #95a5a6;
+    
+    .student-details p {
+      font-size: 16px;
+      opacity: 0.9;
+      display: flex;
+      align-items: center;
     }
-    .badge {
-      padding: 4px 8px;
+    
+    .student-details p i {
+      margin-right: 8px;
+    }
+    
+    .stats-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .stat-card {
+      background-color: white;
       border-radius: 12px;
-      font-size: 0.8rem;
+      padding: 20px;
+      flex: 1;
+      min-width: 180px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      border-left: 4px solid var(--primary);
     }
-    .success { background: #d4edda; color: #155724; }
-    .average { background: #fff3cd; color: #856404; }
-    .low { background: #f8d7da; color: #721c24; }
+    
+    .stat-card h4 {
+      font-size: 14px;
+      color: var(--gray);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    
+    .stat-card p {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    
+    .best-exam {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      display: block;
+    }
+    
+    .exam-score {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+    
+    .exam-name {
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .result-table-container {
+      overflow-x: auto;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 25px;
+    }
+    
+    .result-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .result-table th {
+      background-color: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 18px;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+    }
+    
+    .result-table th:first-child {
+      border-top-left-radius: 12px;
+    }
+    
+    .result-table th:last-child {
+      border-top-right-radius: 12px;
+    }
+    
+    .result-table td {
+      padding: 16px;
+      text-align: center;
+      border-bottom: 1px solid #e6e6e6;
+    }
+    
+    .result-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .result-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    
+    .result-table tr:hover {
+      background-color: #f1f9ff;
+    }
+    
+    .result-table td:first-child {
+      text-align: left;
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .badge {
+      padding: 8px 14px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-block;
+    }
+    
+    .success { 
+      background: #e7f6ec; 
+      color: #0a7b3e; 
+    }
+    
+    .average { 
+      background: #fef5e6; 
+      color: #c25a04; 
+    }
+    
+    .low { 
+      background: #fde9e7; 
+      color: #c23021; 
+    }
+
+    .not-attended { 
+      background: #f0f0f0; 
+      color: #7f8c8d; 
+    }
+    
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--gray);
+      padding-top: 20px;
+      border-top: 1px solid #e6e6e6;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--gray);
+    }
+    
+    .empty-state i {
+      font-size: 70px;
+      margin-bottom: 20px;
+      color: #e6e6e6;
+    }
+    
+    .empty-state p {
+      font-size: 18px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .error-message {
+      background-color: #fde9e7;
+      color: #c23021;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .error-message i {
+      margin-right: 15px;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+        border-radius: 15px;
+      }
+      
+      .header h1 {
+        font-size: 26px;
+      }
+      
+      .input-group {
+        flex-direction: column;
+      }
+      
+      button {
+        margin-left: 0;
+        margin-top: 15px;
+        width: 100%;
+      }
+      
+      .student-info {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+      }
+      
+      .student-avatar {
+        margin-right: 0;
+        margin-bottom: 15px;
+      }
+      
+      .stats-container {
+        flex-direction: column;
+      }
+      
+      .stat-card {
+        min-width: 100%;
+      }
+      
+      .result-table {
+        font-size: 14px;
+      }
+      
+      .result-table th,
+      .result-table td {
+        padding: 12px 8px;
+      }
+      
+      .result-table td:first-child {
+        max-width: 120px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .header h1 {
+        font-size: 22px;
+      }
+      
+      .student-details h3 {
+        font-size: 20px;
+      }
+      
+      input[type="text"] {
+        padding: 16px 16px 16px 45px;
+      }
+      
+      .result-table {
+        font-size: 12px;
+      }
+      
+      .result-table th,
+      .result-table td {
+        padding: 10px 5px;
+      }
+      
+      .badge {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+      
+      .result-table td:first-child {
+        max-width: 100px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Öğrenci Bilgi Sistemi</h1>
-    <p>Lütfen öğrenci numarasını giriniz:</p>
-    <input type="text" id="noInput" placeholder="Öğrenci No">
-    <button onclick="fetchStudentData()">Sonuçları Gör</button>
-    <div id="studentData"></div>
-    <div class="footer">© 2025 Öğrenci Bilgi Sistemi</div>
+    <div class="header">
+      <div class="logo">
+        <i class="fas fa-graduation-cap"></i>
+      </div>
+      <h1>Öğrenci Bilgi Sistemi</h1>
+      <p>Öğrenci numaranızı girerek sınav sonuçlarınızı ve performans istatistiklerinizi görüntüleyin</p>
+    </div>
+    
+    <div class="input-card">
+      <div class="input-group">
+        <i class="input-icon fas fa-id-card"></i>
+        <input type="text" id="noInput" placeholder="Öğrenci numaranızı girin">
+        <button onclick="fetchStudentData()">
+          <i class="fas fa-search"></i> Sonuçları Gör
+        </button>
+      </div>
+    </div>
+    
+    <div class="loading" id="loadingIndicator">
+      <div class="spinner"></div>
+      <p>Öğrenci bilgileri yükleniyor...</p>
+    </div>
+    
+    <div id="studentData">
+      <div class="empty-state">
+        <i class="fas fa-search"></i>
+        <p>Öğrenci numarası girerek sınav sonuçlarınızı görüntüleyin</p>
+      </div>
+    </div>
+    
+    <div class="footer">
+      © 2025 Öğrenci Bilgi Sistemi
+    </div>
   </div>
 
   <script>
+    // API URL'sini güncelledim
+    const API_URL = "https://script.google.com/macros/s/AKfycbyOdgOgDrshXPlcgybqB7ugaHfMMD74f-QoB4Maxtt0gHD_Ic7CC4VzeECY71dmR8mA/exec";
+    
     function fetchStudentData() {
       const no = document.getElementById("noInput").value.trim();
+      const loadingIndicator = document.getElementById("loadingIndicator");
+      const studentData = document.getElementById("studentData");
+      
       if (!no) {
-        alert("Lütfen öğrenci numarası giriniz.");
+        studentData.innerHTML = `
+          <div class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            Lütfen öğrenci numarası giriniz.
+          </div>
+        `;
         return;
       }
 
-      document.getElementById("studentData").innerHTML = "<p>Yükleniyor...</p>";
+      // Yükleme göstergeini göster
+      loadingIndicator.style.display = 'block';
+      studentData.innerHTML = '';
 
-      const url = "https://script.google.com/macros/s/AKfycbx5tf1lM0SgJY3aEOcRxqIV4YGYz9vGw7bAlMfWGXZUWXjxqmW8CET4lIZC_tpuYVftow/exec?no=" + encodeURIComponent(no);
-
-      fetch(url)
+      fetch(`${API_URL}?no=${encodeURIComponent(no)}`)
         .then(res => res.json())
         .then(data => {
+          // Yükleme göstergeini gizle
+          loadingIndicator.style.display = 'none';
+          
+          // Hata kontrolü
+          if (data.error) {
+            studentData.innerHTML = `
+              <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                  <p>${data.error}</p>
+                </div>
+              </div>`;
+            return;
+          }
+          
           if (data.length === 0) {
-            document.getElementById("studentData").innerHTML = "<p>Öğrenci bulunamadı.</p>";
+            studentData.innerHTML = `
+              <div class="empty-state">
+                <i class="fas fa-user-times"></i>
+                <p>${no} numaralı öğrenci bulunamadı.</p>
+              </div>
+            `;
             return;
           }
 
-          const studentName = data[0]["Öğrenci Adı"];
+          // API'den gelen veri yapısına göre işlemler
           let totalCorrect = 0;
+          let totalScore = 0;
+          let bestExam = { score: 0, name: "" };
+          let worstExam = { score: 100, name: "" };
+          
+          // Öğrenci adını bulmak için ilk kaydı kullan
+          let studentName = "Öğrenci";
+          let examCount = 0;
+          let attendedExamCount = 0;
 
           let rows = data.map(exam => {
-            totalCorrect += parseInt(exam["Doğru Sayısı"]);
+            // Öğrenci adı satırını kontrol et
+            if (exam["Sınav Adı"] === "Öğrenci Adı") {
+              studentName = exam["Doğru Sayısı"] || "Öğrenci";
+              return '';
+            }
+            
+            // Geçerli bir sınav değilse atla
+            if (!exam["Sınav Adı"]) return '';
+            
+            // Doğru sayısı ve puanı kontrol et
+            const correctStr = exam["Doğru Sayısı"] || "";
+            const scoreStr = exam["Puan"] || "";
+            
+            const correct = parseInt(correctStr) || 0;
+            const score = parseInt(scoreStr) || 0;
+            
+            // Sınav sayısını artır
+            examCount++;
+            
+            // Eğer sınava katılmışsa istatistikleri hesapla
+            if (correctStr !== "" && scoreStr !== "" && (correct > 0 || score > 0)) {
+              totalCorrect += correct;
+              totalScore += score;
+              attendedExamCount++;
+              
+              // En iyi ve en kötü sınavı bul
+              if (score > bestExam.score) {
+                bestExam = { score: score, name: exam["Sınav Adı"] };
+              }
+              
+              if (score < worstExam.score && score > 0) {
+                worstExam = { score: score, name: exam["Sınav Adı"] };
+              }
 
+              let badgeClass, badgeText;
 
-let badgeClass, badgeText;
+              if (correct >= 17) {
+                badgeClass = "success";
+                badgeText  = "Başarılı";
+              } else if (correct >= 14) {
+                badgeClass = "average";
+                badgeText  = "İyi/Geliştirilebilir";
+              } else if (correct >= 12) {
+                badgeClass = "average";
+                badgeText  = "Orta/Geliştirilmeli";
+              } else {
+                badgeClass = "low";
+                badgeText  = "Zayıf/Konu Tekrarı";
+              }
 
-if (exam["Doğru Sayısı"] >= 17) {
-  badgeClass = "success";
-  badgeText  = "Başarılı";
-} else if (exam["Doğru Sayısı"] >= 14) {
-  badgeClass = "average";
-  badgeText  = "İyi / Hala Geliştirilebilir";
-} else if (exam["Doğru Sayısı"] >= 12) {
-  badgeClass = "average";
-  badgeText  = "Orta / Geliştirilmeli";
-} else {
-  badgeClass = "low";
-  badgeText  = "Zayıf / Yetersiz";
-}
-
-
-
-
-
-            // Tarih formatı: 07.09.2025
-            const formattedDate = new Date(exam["Sınav Tarihi"]).toLocaleDateString("tr-TR");
-
-            return `
-              <tr>
-                <td>${exam["Sınav Adı"]}</td>
-                <td>${formattedDate}</td>
-                <td>${exam["Doğru Sayısı"]}</td>
-                <td>${exam["Puan"]}</td>
-                <td><span class="badge ${badgeClass}">${badgeText}</span></td>
-              </tr>`;
+              return `
+                <tr>
+                  <td title="${exam["Sınav Adı"]}">${exam["Sınav Adı"]}</td>
+                  <td>${correct}</td>
+                  <td>${score}</td>
+                  <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+                </tr>`;
+            } else {
+              // Sınava katılmamışsa veya sonuç yoksa
+              return `
+                <tr>
+                  <td title="${exam["Sınav Adı"]}">${exam["Sınav Adı"]}</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td><span class="badge not-attended">Teslim Edilmedi/Katılmadı</span></td>
+                </tr>`;
+            }
           }).join("");
 
-          const avg = (totalCorrect / data.length).toFixed(1);
+          // NaN kontrolü
+          const avgCorrect = attendedExamCount > 0 ? (totalCorrect / attendedExamCount).toFixed(1) : "0.0";
+          const avgScore = attendedExamCount > 0 ? (totalScore / attendedExamCount).toFixed(1) : "0.0";
 
-          document.getElementById("studentData").innerHTML = `
-            <h3>${studentName} (${no})</h3>
-            <p>Toplam Sınav: ${data.length} | Ortalama Doğru: ${avg}</p>
-            <table class="result-table">
-              <thead>
-                <tr>
-                  <th>Sınav Adı</th>
-                  <th>Sınav Tarihi</th>
-                  <th>Doğru Sayısı</th>
-                  <th>Aldığı Puan</th>
-                  <th>Durum</th>
-                </tr>
-              </thead>
-              <tbody>${rows}</tbody>
-            </table>`;
+          // En iyi sınav adını kısalt (uzunsa)
+          const bestExamName = bestExam.name.length > 20 ? 
+            bestExam.name.substring(0, 17) + '...' : bestExam.name;
+
+          studentData.innerHTML = `
+            <div class="student-info">
+              <div class="student-avatar">
+                <i class="fas fa-user-graduate"></i>
+              </div>
+              <div class="student-details">
+                <h3>${studentName}</h3>
+                <p><i class="fas fa-id-card"></i> Öğrenci No: ${no}</p>
+              </div>
+            </div>
+            
+            <div class="stats-container">
+              <div class="stat-card">
+                <h4>Toplam Sınav</h4>
+                <p>${examCount}</p>
+              </div>
+              <div class="stat-card">
+                <h4>Katılım Sağlanan</h4>
+                <p>${attendedExamCount}</p>
+              </div>
+              <div class="stat-card">
+                <h4>Ortalama Doğru</h4>
+                <p>${avgCorrect}</p>
+              </div>
+              <div class="stat-card">
+                <h4>Ortalama Puan</h4>
+                <p>${avgScore}</p>
+              </div>
+              <div class="stat-card">
+                <h4>En İyi Sınav</h4>
+                <div class="best-exam">
+                  <div class="exam-score">${bestExam.score || '-'}</div>
+                  <div class="exam-name" title="${bestExam.name}">${bestExamName || 'Henüz yok'}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="result-table-container">
+              <table class="result-table">
+                <thead>
+                  <tr>
+                    <th>Sınav Adı</th>
+                    <th>Doğru Sayısı</th>
+                    <th>Puan</th>
+                    <th>Durum</th>
+                  </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+              </table>
+            </div>`;
         })
         .catch(err => {
-          document.getElementById("studentData").innerHTML = "<p>Hata oluştu: " + err + "</p>";
+          // Yükleme göstergeini gizle
+          loadingIndicator.style.display = 'none';
+          
+          studentData.innerHTML = `
+            <div class="error-message">
+              <i class="fas fa-exclamation-triangle"></i>
+              <div>
+                <p>Verilere erişilirken bir hata oluştu</p>
+                <p style="margin-top: 10px; font-size: 14px;">Lütfen daha sonra tekrar deneyin veya yöneticinizle iletişime geçin.</p>
+              </div>
+            </div>`;
+          console.error("Hata:", err);
         });
     }
+    
+    // Enter tuşu ile arama yapmayı sağla
+    document.getElementById("noInput").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        fetchStudentData();
+      }
+    });
+    
+    // Sayfa yüklendiğinde input alanına odaklan
+    window.onload = function() {
+      document.getElementById("noInput").focus();
+    };
   </script>
 </body>
 </html>
