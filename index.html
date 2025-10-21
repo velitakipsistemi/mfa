@@ -3,765 +3,628 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Türkçe Dersi Öğrenci Takip Sistemi</title>
+  <title>Öğrenci Takip Sistemi</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-    
     :root {
       --primary: #3498db;
       --primary-dark: #2980b9;
-      --secondary: #f39c12;
-      --secondary-dark: #e67e22;
       --success: #2ecc71;
-      --warning: #f1c40f;
       --danger: #e74c3c;
-      --light: #ecf0f1;
       --dark: #2c3e50;
       --gray: #95a5a6;
-      --text: #333333;
+      --light-gray: #f8f9fa;
+      --white: #ffffff;
     }
-    
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-    
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: var(--text);
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start; /* Dikeyde üste hizala */
       min-height: 100vh;
-      padding: 20px;
-      line-height: 1.6;
+      padding: 15px;
     }
-    
     .container {
-      background-color: #ffffff;
-      padding: 30px;
+      background-color: var(--white);
+      padding: 20px;
       border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      max-width: 900px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
       width: 100%;
       position: relative;
       overflow: hidden;
+      border-top: 5px solid var(--primary);
     }
-    
-    .container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 5px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-    }
-    
     .header {
       text-align: center;
       margin-bottom: 30px;
     }
-    
-    .logo {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 15px;
-      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-    }
-    
-    .logo i {
-      font-size: 36px;
-      color: white;
-    }
-    
-    .header h1 {
+    h1 {
+      font-size: 24px;
       color: var(--dark);
-      font-size: 32px;
-      margin-bottom: 10px;
       font-weight: 700;
     }
-    
-    .header p {
-      color: var(--gray);
-      font-size: 16px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    
+    p { color: var(--gray); }
+    #student-results-page { display: none; }
     .input-card {
-      background-color: #f8f9fa;
+      background-color: var(--light-gray);
       border-radius: 15px;
       padding: 25px;
-      margin-bottom: 25px;
+      margin-top: 20px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     }
-    
-    .input-group {
-      display: flex;
-      margin-bottom: 0;
-      position: relative;
-    }
-    
-    .input-icon {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gray);
-      z-index: 1;
-    }
-    
-    input[type="text"] {
-      padding: 18px 18px 18px 50px;
+    .input-group { display: flex; position: relative; }
+    input {
+      padding: 15px;
       font-size: 16px;
       width: 100%;
-      border: 2px solid #e6e6e6;
+      border: 1px solid #ddd;
       border-radius: 12px;
       transition: all 0.3s ease;
-      font-family: 'Poppins', sans-serif;
-      background-color: white;
     }
-    
-    input[type="text"]:focus {
+    input:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
       outline: none;
     }
-    
     button {
-      padding: 18px 25px;
+      padding: 15px 20px;
       font-size: 16px;
-      background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+      background: var(--primary);
       color: white;
       border: none;
       border-radius: 12px;
       cursor: pointer;
       transition: all 0.3s ease;
       font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: 12px;
-      min-width: 150px;
-      box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3);
+      margin-left: 10px;
     }
-    
     button:hover {
-      background: linear-gradient(135deg, var(--secondary-dark), #d35400);
-      transform: translateY(-3px);
-      box-shadow: 0 7px 18px rgba(230, 126, 34, 0.4);
+      background: var(--primary-dark);
+      transform: translateY(-2px);
     }
-    
-    button:active {
-      transform: translateY(0);
-    }
-    
-    button i {
-      margin-right: 10px;
-    }
-    
     .loading {
       text-align: center;
       padding: 40px;
       display: none;
     }
-    
     .spinner {
-      width: 60px;
-      height: 60px;
-      border: 5px solid rgba(52, 152, 219, 0.2);
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(52, 152, 219, 0.2);
       border-radius: 50%;
       border-top-color: var(--primary);
       animation: spin 1s ease-in-out infinite;
       margin: 0 auto 20px;
     }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
+    @keyframes spin { to { transform: rotate(360deg); } }
     .student-info {
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: white;
-      padding: 25px;
+      padding: 20px;
       border-radius: 15px;
       margin-bottom: 25px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-      display: flex;
-      align-items: center;
-    }
-    
-    .student-avatar {
-      width: 70px;
-      height: 70px;
-      background-color: rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 20px;
-      flex-shrink: 0;
-    }
-    
-    .student-avatar i {
-      font-size: 32px;
-    }
-    
-    .student-details h3 {
-      font-size: 24px;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-    
-    .student-details p {
-      font-size: 16px;
-      opacity: 0.9;
-      display: flex;
-      align-items: center;
-    }
-    
-    .student-details p i {
-      margin-right: 8px;
-    }
-    
-    .stats-container {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 25px;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-    
-    .stat-card {
-      background-color: white;
-      border-radius: 12px;
-      padding: 20px;
-      flex: 1;
-      min-width: 180px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
       text-align: center;
-      border-left: 4px solid var(--primary);
     }
-    
-    .stat-card h4 {
-      font-size: 14px;
-      color: var(--gray);
-      margin-bottom: 10px;
-      font-weight: 500;
+    .student-info h3 { margin-bottom: 5px; font-size: 1.25rem; }
+    .student-info .student-class {
+        font-weight: 500;
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0;
     }
-    
-    .stat-card p {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--dark);
+    .student-info .instruction {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+        margin-top: 15px;
     }
-    
-    .best-exam {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-      display: block;
-    }
-    
-    .exam-score {
-      font-size: 20px;
-      font-weight: bold;
-      color: var(--primary);
-      margin-bottom: 5px;
-    }
-    
-    .exam-name {
-      font-size: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    
-    .result-table-container {
-      overflow-x: auto;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    .chart-container {
       margin-bottom: 25px;
+      padding: 10px;
+      background: var(--light-gray);
+      border-radius: 15px;
+      height: 250px;
     }
-    
     .result-table {
       width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      border-radius: 12px;
-      overflow: hidden;
+      border-collapse: collapse;
+    }
+    .result-table thead {
+      /* Mobil için gizlenir, desktop için gösterilir. */
+      display: none; 
+    }
+    .result-table th, .result-table td {
+      padding: 12px 15px;
+      /* Varsayılan hizalamayı sola ayarlayalım */
+      text-align: left; 
+      border-bottom: 1px solid #eef;
+      vertical-align: middle;
+    }
+    /* Doğru Sayısı sütunu için yeni CSS sınıfı */
+    .align-center {
+        text-align: center !important;
+    }
+    /* Puan sütununu sağa yaslayalım, rakamsal veriler için daha iyi */
+    .align-right {
+        text-align: right !important;
+    }
+    /* YENİ: Puan sütununa sağdan ek boşluk ekle */
+    .score-cell {
+        padding-right: 35px !important; /* Normal 15px'e ek 20px boşluk */
     }
     
-    .result-table th {
-      background-color: var(--primary);
-      color: white;
-      text-align: center;
-      padding: 18px;
-      font-weight: 600;
-      position: sticky;
-      top: 0;
+    /* YENİ: Sınıf Ortalaması Hücresi */
+    .comparison-cell {
+        display: flex;
+        align-items: center;
+        /* İçerik sola yaslı görünür (sayı sol, ok sağ) */
+        justify-content: space-between; 
+        white-space: nowrap;
+    } 
+    /* YENİ: Ortalamayı tutacak span */
+    .average-score-display {
+        flex-grow: 1;
+        text-align: left; /* Sayı sola yaslanır */
+        font-weight: 500;
     }
-    
-    .result-table th:first-child {
-      border-top-left-radius: 12px;
-    }
-    
-    .result-table th:last-child {
-      border-top-right-radius: 12px;
-    }
-    
-    .result-table td {
-      padding: 16px;
-      text-align: center;
-      border-bottom: 1px solid #e6e6e6;
-    }
-    
-    .result-table tr:last-child td {
-      border-bottom: none;
-    }
-    
-    .result-table tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-    
-    .result-table tr:hover {
-      background-color: #f1f9ff;
-    }
-    
-    .result-table td:first-child {
-      text-align: left;
-      max-width: 200px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    
-    .badge {
-      padding: 8px 14px;
-      border-radius: 50px;
-      font-size: 12px;
-      font-weight: 500;
-      display: inline-block;
-    }
-    
-    .success { 
-      background: #e7f6ec; 
-      color: #0a7b3e; 
-    }
-    
-    .average { 
-      background: #fef5e6; 
-      color: #c25a04; 
-    }
-    
-    .low { 
-      background: #fde9e7; 
-      color: #c23021; 
+    /* YENİ: Ok ve farkı tutacak bölüm */
+    .comparison-icons {
+        display: flex;
+        align-items: center;
+        margin-left: 10px; /* Sayı ile ok arasında boşluk */
     }
 
-    .not-attended { 
-      background: #f0f0f0; 
-      color: #7f8c8d; 
+    .result-table th {
+      background-color: var(--light-gray);
+      color: var(--dark);
+      font-weight: 600;
     }
-    
-    .footer {
-      margin-top: 30px;
-      text-align: center;
-      font-size: 14px;
-      color: var(--gray);
-      padding-top: 20px;
-      border-top: 1px solid #e6e6e6;
+    .result-table tbody tr:hover { background-color: #f1f9ff; }
+    .back-button {
+      background: none; border: none; color: var(--gray);
+      cursor: pointer; font-size: 16px; margin-bottom: 20px;
+      padding: 5px; display: flex; align-items: center;
     }
-    
-    .empty-state {
-      text-align: center;
-      padding: 50px 20px;
-      color: var(--gray);
-    }
-    
-    .empty-state i {
-      font-size: 70px;
-      margin-bottom: 20px;
-      color: #e6e6e6;
-    }
-    
-    .empty-state p {
-      font-size: 18px;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-    
+    .back-button i { margin-right: 8px; }
     .error-message {
-      background-color: #fde9e7;
-      color: #c23021;
-      padding: 20px;
+      text-align: center; color: var(--danger); padding: 20px;
+      background: #fde9e7; border: 1px solid var(--danger);
       border-radius: 12px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
     }
     
-    .error-message i {
-      margin-right: 15px;
-      font-size: 24px;
-      flex-shrink: 0;
+    .status-icon { margin-right: 8px; font-size: 14px; width: 16px; text-align: center; }
+    .difference { margin-left: 8px; font-size: 13px; font-weight: 500; }
+    .success { color: var(--success); }
+    .danger { color: var(--danger); }
+    .neutral { color: var(--gray); }
+
+    /* Ders Seçim Stilleri */
+    .subject-selection-container { text-align: center; }
+    .subject-selection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 20px;
     }
-    
-    @media (max-width: 768px) {
-      .container {
-        padding: 20px;
-        border-radius: 15px;
-      }
-      
-      .header h1 {
-        font-size: 26px;
-      }
-      
-      .input-group {
-        flex-direction: column;
-      }
-      
-      button {
-        margin-left: 0;
-        margin-top: 15px;
-        width: 100%;
-      }
-      
-      .student-info {
-        flex-direction: column;
+    .subject-button {
+      background: var(--light-gray);
+      border: 1px solid #eef;
+      border-radius: 12px;
+      padding: 15px 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    .subject-button i {
+      font-size: 20px;
+      margin-bottom: 8px;
+      display: block;
+      color: var(--primary);
+    }
+    .subject-button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+      border-color: var(--primary);
+    }
+    .not-attended {
         text-align: center;
-        padding: 20px;
+        color: var(--gray);
+        font-style: italic;
+    }
+
+    /* İstatistik Kartları */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+    .stat-card {
+        background-color: var(--light-gray);
+        padding: 10px;
+        border-radius: 12px;
+        text-align: center;
+        border: 1px solid #eef;
+    }
+    .stat-card h4 {
+        color: var(--gray);
+        font-size: 12px;
+        font-weight: 500;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+    }
+    .stat-card p {
+        color: var(--dark);
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    /* MOBİL UYUMLULUK */
+    @media (max-width: 768px) {
+        .result-table thead {
+            display: none;
+        }
+        .result-table, .result-table tbody, .result-table tr, .result-table td {
+            display: block;
+            width: 100%;
+        }
+        .result-table tr {
+            margin-bottom: 15px;
+            border: 1px solid #ddd; 
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05); 
+        }
+        /* Mobil: Data label'lar sola, değerler sağa hizalı kalır. */
+        .result-table td {
+            text-align: right; 
+            padding-left: 50%;
+            position: relative;
+            border-bottom: 1px solid #eee;
+        }
+        .result-table td:last-child {
+            border-bottom: 0;
+        }
+        .result-table td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 15px;
+            width: calc(50% - 30px);
+            padding-right: 10px;
+            white-space: nowrap;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        /* Mobil: Puan hücresinin sağdan ek dolgusunu kaldır */
+        .score-cell {
+            padding-right: 15px !important; 
+        }
+
+        /* Mobil Ortalamayı sola yaslamak için */
+        td[data-label="Sınıf Ortalaması"] {
+            text-align: left !important;
+            /* İç flex elemanının soldan başlaması için padding'i düzelt */
+            padding-left: 15px !important; 
+        }
+        td[data-label="Sınıf Ortalaması"]::before {
+            display: none; /* Mobil etiketi gizle, zira içerik kendisi etiketlenecek */
+        }
+    }
+    @media (min-width: 769px) {
+      .result-table thead {
+        display: table-header-group;
       }
-      
-      .student-avatar {
-        margin-right: 0;
-        margin-bottom: 15px;
-      }
-      
       .stats-container {
-        flex-direction: column;
+            grid-template-columns: repeat(4, 1fr);
       }
-      
-      .stat-card {
-        min-width: 100%;
+      /* Desktop: Tablo başlıkları */
+      .result-table th:nth-child(1), .result-table th:nth-child(2) { /* Sınav Adı, Tarih */
+        text-align: left;
       }
-      
-      .result-table {
-        font-size: 14px;
+      .result-table th:nth-child(3) { /* Doğru Sayısı */
+        text-align: center;
       }
-      
-      .result-table th,
-      .result-table td {
-        padding: 12px 8px;
+      .result-table th:nth-child(4) { /* Puan */
+        text-align: right; 
+        padding-right: 35px; /* Başlığa da aynı boşluğu ver */
       }
-      
-      .result-table td:first-child {
-        max-width: 120px;
+      .result-table th:nth-child(5) { /* Sınıf Ortalaması */
+        text-align: left; 
       }
     }
-    
     @media (max-width: 480px) {
-      .header h1 {
-        font-size: 22px;
-      }
-      
-      .student-details h3 {
-        font-size: 20px;
-      }
-      
-      input[type="text"] {
-        padding: 16px 16px 16px 45px;
-      }
-      
-      .result-table {
-        font-size: 12px;
-      }
-      
-      .result-table th,
-      .result-table td {
-        padding: 10px 5px;
-      }
-      
-      .badge {
-        padding: 6px 10px;
-        font-size: 11px;
-      }
-      
-      .result-table td:first-child {
-        max-width: 100px;
-      }
+        .input-group {
+            flex-direction: column;
+        }
+        .input-group button {
+            margin-left: 0;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .container {
+            padding: 15px;
+        }
+        h1 {
+            font-size: 20px;
+        }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <div class="logo">
-        <i class="fas fa-graduation-cap"></i>
+    <div id="search-page">
+      <div class="header">
+        <h1>Öğrenci Sınav Sonuçları</h1>
+        <p>Tüm sınav sonuçlarını görmek için öğrenci numaranızı girin.</p>
       </div>
-      <h1>Türkçe Dersi Öğrenci Takip Sistemi</h1>
-      <p>Öğrenci numaranızı girerek sınav, deneme, ödev ve performans değerlendirme sonuçlarını görüntüleyebilirsiniz.</p>
-    </div>
-    
-    <div class="input-card">
-      <div class="input-group">
-        <i class="input-icon fas fa-id-card"></i>
-        <input type="text" id="noInput" placeholder="Öğrenci numaranızı girin">
-        <button onclick="fetchStudentData()">
-          <i class="fas fa-search"></i> Sonuçları Gör
-        </button>
+      <div class="input-card">
+        <div class="input-group">
+          <input type="text" id="noInput" placeholder="Öğrenci numaranızı girin...">
+          <button id="searchButton"><i class="fas fa-search"></i> Ara</button>
+        </div>
       </div>
     </div>
-    
-    <div class="loading" id="loadingIndicator">
-      <div class="spinner"></div>
-      <p>Öğrenci bilgileri yükleniyor...</p>
-    </div>
-    
-    <div id="studentData">
-      <div class="empty-state">
-        <i class="fas fa-search"></i>
-        <p>Öğrenci numarası girerek sınav sonuçlarınızı görüntüleyin</p>
+
+    <div id="student-results-page">
+      <button class="back-button" onclick="goBackToSubjectSelection()"><i class="fas fa-arrow-left"></i> Ders Seçimine Dön</button>
+      <div class="loading" id="loadingIndicator">
+        <div class="spinner"></div>
+        <p>Sonuçlar yükleniyor...</p>
       </div>
-    </div>
-    
-    <div class="footer">
-      © 2025 Türkçe Dersi Öğrenci Takip Sistemi
+      <div id="studentDataContainer"></div>
     </div>
   </div>
 
-  <script>
-    // API URL'sini güncelledim
-    const API_URL = "https://script.google.com/macros/s/AKfycbyOdgOgDrshXPlcgybqB7ugaHfMMD74f-QoB4Maxtt0gHD_Ic7CC4VzeECY71dmR8mA/exec";
+<script>
+    // API URL'nizi buraya yapıştırın. (Script'i yayınladıktan sonra alacaksınız.)
+    const API_URL = "https://script.google.com/macros/s/AKfycbznN6SfwiZjKefRaM0VY-qhKAvryxPn1SE0qPKsnGlL0LyFOHXBcWukeTWmyRlxTtTPHw/exec";
+    const searchPage = document.getElementById('search-page');
+    const resultsPage = document.getElementById('student-results-page');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const studentDataContainer = document.getElementById('studentDataContainer');
+    const noInput = document.getElementById('noInput');
+    const searchButton = document.getElementById('searchButton');
+    const backButton = document.querySelector('.back-button');
     
-    function fetchStudentData() {
-      const no = document.getElementById("noInput").value.trim();
-      const loadingIndicator = document.getElementById("loadingIndicator");
-      const studentData = document.getElementById("studentData");
-      
-      if (!no) {
-        studentData.innerHTML = `
-          <div class="error-message">
-            <i class="fas fa-exclamation-circle"></i>
-            Lütfen öğrenci numarası giriniz.
-          </div>
-        `;
-        return;
-      }
+    let fullStudentData = null;
+    let resultsChart = null;
+    
+    function goBack() {
+      resultsPage.style.display = 'none';
+      searchPage.style.display = 'block';
+      studentDataContainer.innerHTML = '';
+      noInput.value = '';
+      fullStudentData = null;
+      backButton.onclick = goBack;
+      backButton.innerHTML = `<i class="fas fa-arrow-left"></i> Yeni Arama Yap`;
+    }
 
-      // Yükleme göstergeini göster
+    function goBackToSubjectSelection() {
+        renderSubjectSelection();
+    }
+
+    async function handleStudentSearch() {
+      const studentNo = noInput.value.trim();
+      if (!studentNo) return;
+
+      searchPage.style.display = 'none';
+      resultsPage.style.display = 'block';
       loadingIndicator.style.display = 'block';
-      studentData.innerHTML = '';
+      studentDataContainer.innerHTML = '';
+      if (resultsChart) resultsChart.destroy();
 
-      fetch(`${API_URL}?no=${encodeURIComponent(no)}`)
-        .then(res => res.json())
-        .then(data => {
-          // Yükleme göstergeini gizle
-          loadingIndicator.style.display = 'none';
-          
-          // Hata kontrolü
-          if (data.error) {
-            studentData.innerHTML = `
-              <div class="error-message">
-                <i class="fas fa-exclamation-triangle"></i>
-                <div>
-                  <p>${data.error}</p>
-                </div>
-              </div>`;
-            return;
-          }
-          
-          if (data.length === 0) {
-            studentData.innerHTML = `
-              <div class="empty-state">
-                <i class="fas fa-user-times"></i>
-                <p>${no} numaralı öğrenci bulunamadı.</p>
-              </div>
+      try {
+        const response = await fetch(`${API_URL}?no=${encodeURIComponent(studentNo)}`);
+        if (!response.ok) throw new Error(`Sunucuya ulaşılamadı: ${response.statusText}`);
+        
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+
+        fullStudentData = data;
+        renderSubjectSelection();
+
+      } catch (error) {
+        studentDataContainer.innerHTML = `<div class="error-message"><p>Hata: ${error.message}</p></div>`;
+        backButton.onclick = goBack;
+        backButton.innerHTML = `<i class="fas fa-arrow-left"></i> Yeni Arama Yap`;
+      } finally {
+        loadingIndicator.style.display = 'none';
+      }
+    }
+
+    function renderSubjectSelection() {
+        backButton.onclick = goBack;
+        backButton.innerHTML = `<i class="fas fa-arrow-left"></i> Yeni Arama Yap`;
+
+        const studentName = fullStudentData.studentName;
+        const studentClass = fullStudentData.studentClass;
+        const subjects = fullStudentData.resultsBySubject;
+        const subjectNames = Object.keys(subjects);
+
+        if (subjectNames.length === 0 && !studentName) {
+            studentDataContainer.innerHTML = `
+                <div class="error-message"><p>Bu öğrenci için görüntülenecek sonuç bulunamadı.</p></div>
             `;
             return;
-          }
+        }
 
-          // API'den gelen veri yapısına göre işlemler
-          let totalCorrect = 0;
-          let totalScore = 0;
-          let bestExam = { score: 0, name: "" };
-          let worstExam = { score: 100, name: "" };
-          
-          // Öğrenci adını bulmak için ilk kaydı kullan
-          let studentName = "Öğrenci";
-          let examCount = 0;
-          let attendedExamCount = 0;
+        const subjectButtonsHtml = subjectNames.map(name => `
+            <button class="subject-button" onclick="renderSubjectResults('${name}')">
+                <i class="fas fa-book"></i>
+                ${name}
+            </button>
+        `).join('');
 
-          let rows = data.map(exam => {
-            // Öğrenci adı satırını kontrol et
-            if (exam["Sınav Adı"] === "Öğrenci Adı") {
-              studentName = exam["Doğru Sayısı"] || "Öğrenci";
-              return '';
-            }
-            
-            // Geçerli bir sınav değilse atla
-            if (!exam["Sınav Adı"]) return '';
-            
-            // Doğru sayısı ve puanı kontrol et
-            const correctStr = exam["Doğru Sayısı"] || "";
-            const scoreStr = exam["Puan"] || "";
-            
-            const correct = parseInt(correctStr) || 0;
-            const score = parseInt(scoreStr) || 0;
-            
-            // Sınav sayısını artır
-            examCount++;
-            
-            // Eğer sınava katılmışsa istatistikleri hesapla
-            if (correctStr !== "" && scoreStr !== "" && (correct > 0 || score > 0)) {
-              totalCorrect += correct;
-              totalScore += score;
-              attendedExamCount++;
-              
-              // En iyi ve en kötü sınavı bul
-              if (score > bestExam.score) {
-                bestExam = { score: score, name: exam["Sınav Adı"] };
-              }
-              
-              if (score < worstExam.score && score > 0) {
-                worstExam = { score: score, name: exam["Sınav Adı"] };
-              }
-
-              let badgeClass, badgeText;
-
-              if (correct >= 17) {
-                badgeClass = "success";
-                badgeText  = "Başarılı";
-              } else if (correct >= 14) {
-                badgeClass = "average";
-                badgeText  = "İyi/Geliştirilebilir";
-              } else if (correct >= 12) {
-                badgeClass = "average";
-                badgeText  = "Orta/Geliştirilmeli";
-              } else {
-                badgeClass = "low";
-                badgeText  = "Zayıf/Konu Tekrarı";
-              }
-
-              return `
-                <tr>
-                  <td title="${exam["Sınav Adı"]}">${exam["Sınav Adı"]}</td>
-                  <td>${correct}</td>
-                  <td>${score}</td>
-                  <td><span class="badge ${badgeClass}">${badgeText}</span></td>
-                </tr>`;
-            } else {
-              // Sınava katılmamışsa veya sonuç yoksa
-              return `
-                <tr>
-                  <td title="${exam["Sınav Adı"]}">${exam["Sınav Adı"]}</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td><span class="badge not-attended">Teslim Edilmedi/Katılmadı</span></td>
-                </tr>`;
-            }
-          }).join("");
-
-          // NaN kontrolü
-          const avgCorrect = attendedExamCount > 0 ? (totalCorrect / attendedExamCount).toFixed(1) : "0.0";
-          const avgScore = attendedExamCount > 0 ? (totalScore / attendedExamCount).toFixed(1) : "0.0";
-
-          // En iyi sınav adını kısalt (uzunsa)
-          const bestExamName = bestExam.name.length > 20 ? 
-            bestExam.name.substring(0, 17) + '...' : bestExam.name;
-
-          studentData.innerHTML = `
+        const html = `
             <div class="student-info">
-              <div class="student-avatar">
-                <i class="fas fa-user-graduate"></i>
-              </div>
-              <div class="student-details">
                 <h3>${studentName}</h3>
-                <p><i class="fas fa-id-card"></i> Öğrenci No: ${no}</p>
-              </div>
+                <p class="student-class">${studentClass || 'Sınıf bilgisi yok'}</p>
+                <p class="instruction">Lütfen görüntülemek istediğiniz dersi seçin.</p>
             </div>
-            
-            <div class="stats-container">
-              <div class="stat-card">
-                <h4>Toplam Sınav</h4>
-                <p>${examCount}</p>
-              </div>
-              <div class="stat-card">
-                <h4>Katılım Sağlanan</h4>
-                <p>${attendedExamCount}</p>
-              </div>
-              <div class="stat-card">
-                <h4>Ortalama Doğru</h4>
-                <p>${avgCorrect}</p>
-              </div>
-              <div class="stat-card">
-                <h4>Ortalama Puan</h4>
-                <p>${avgScore}</p>
-              </div>
-              <div class="stat-card">
-                <h4>En İyi Sınav</h4>
-                <div class="best-exam">
-                  <div class="exam-score">${bestExam.score || '-'}</div>
-                  <div class="exam-name" title="${bestExam.name}">${bestExamName || 'Henüz yok'}</div>
+            <div class="subject-selection-container">
+                <div class="subject-selection-grid">
+                    ${subjectButtonsHtml}
                 </div>
-              </div>
             </div>
-            
-            <div class="result-table-container">
-              <table class="result-table">
-                <thead>
-                  <tr>
-                    <th>Sınav Adı</th>
-                    <th>Doğru Sayısı</th>
-                    <th>Puan</th>
-                    <th>Durum</th>
-                  </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-              </table>
-            </div>`;
-        })
-        .catch(err => {
-          // Yükleme göstergeini gizle
-          loadingIndicator.style.display = 'none';
-          
-          studentData.innerHTML = `
-            <div class="error-message">
-              <i class="fas fa-exclamation-triangle"></i>
-              <div>
-                <p>Verilere erişilirken bir hata oluştu</p>
-                <p style="margin-top: 10px; font-size: 14px;">Lütfen daha sonra tekrar deneyin veya yöneticinizle iletişime geçin.</p>
-              </div>
-            </div>`;
-          console.error("Hata:", err);
-        });
+        `;
+        studentDataContainer.innerHTML = html;
+    }
+
+    function renderSubjectResults(subjectName) {
+        const exams = fullStudentData.resultsBySubject[subjectName];
+        renderChartAndTable(subjectName, exams);
     }
     
-    // Enter tuşu ile arama yapmayı sağla
-    document.getElementById("noInput").addEventListener("keypress", function(event) {
-      if (event.key === "Enter") {
-        fetchStudentData();
-      }
+    function renderChartAndTable(title, exams) {
+      backButton.onclick = goBackToSubjectSelection;
+      backButton.innerHTML = `<i class="fas fa-arrow-left"></i> Ders Seçimine Dön`;
+
+      const totalExams = exams.length;
+      const attendedExamsData = exams.filter(exam => exam.DogruSayisi !== null);
+      const attendedExamsCount = attendedExamsData.length;
+      const totalCorrects = attendedExamsData.reduce((sum, exam) => sum + parseFloat(exam.DogruSayisi), 0);
+      
+      const averageCorrects = attendedExamsCount > 0 ? (totalCorrects / attendedExamsCount).toFixed(2) : '-';
+      // 20 soru varsayımı üzerinden ortalama puan
+      const averageScore = attendedExamsCount > 0 ? ((totalCorrects / attendedExamsCount) / 20 * 100).toFixed(2) : '-'; 
+
+      const statsHtml = `
+          <div class="stats-container">
+              <div class="stat-card"><h4>Toplam Sınav</h4><p>${totalExams}</p></div>
+              <div class="stat-card"><h4>Katıldığı Sınav</h4><p>${attendedExamsCount}</p></div>
+              <div class="stat-card"><h4>Doğru Ort.</h4><p>${averageCorrects}</p></div>
+              <div class="stat-card"><h4>Puan Ort.</h4><p>${averageScore}</p></div>
+          </div>
+      `;
+
+      const examRows = exams.map(exam => {
+        const examTimestamp = exam['Zaman Damgası'] || '-'; // GAS'tan gelen Zaman Damgası
+        
+        if (exam['DogruSayisi'] === null) {
+            // Katılmadı durumunda, Sınav Adı ve Tarih sütunlarını koruyup, diğer 3 sütunu birleştiriyoruz.
+            return `<tr>
+                      <td data-label="Sınav Adı"><strong>${exam['Sınav Adı']}</strong></td>
+                      <td data-label="Tarih">${examTimestamp}</td>
+                      <td colspan="3" class="not-attended">Katılmadı / Teslim Edilmedi</td>
+                    </tr>`;
+        }
+        
+        const correctAnswers = parseFloat(exam['DogruSayisi']) || 0;
+        const score = (correctAnswers / 20) * 100; // Puan hesaplama
+        const classAverageCorrects = parseFloat(exam['SinifOrtalamasi']) || 0;
+        const classAverageScore = (classAverageCorrects / 20) * 100;
+        const difference = score - classAverageScore;
+        
+        let comparisonHtml = '';
+        if (difference > 0.01) {
+            comparisonHtml = `<span class="status-icon success"><i class="fas fa-arrow-up"></i></span> <span class="difference success">(${difference.toFixed(2) > 0 ? '+' : ''}${difference.toFixed(2)})</span>`;
+        } else if (difference < -0.01) {
+            comparisonHtml = `<span class="status-icon danger"><i class="fas fa-arrow-down"></i></span> <span class="difference danger">(${difference.toFixed(2)})</span>`;
+        } else {
+            comparisonHtml = `<span class="status-icon neutral"><i class="fas fa-minus"></i></span>`;
+        }
+        
+        // YENİ Yapı: Sayı ve Ok ayrıldı
+        const averageDisplay = `
+            <span class="average-score-display">${classAverageScore.toFixed(2)}</span>
+            <div class="comparison-icons">${comparisonHtml}</div>
+        `;
+
+        return `
+            <tr>
+                <td data-label="Sınav Adı"><strong>${exam['Sınav Adı']}</strong></td>
+                <td data-label="Tarih">${examTimestamp}</td> 
+                <td data-label="Doğru Sayısı" class="align-center">${correctAnswers}</td> <!-- HİZALAMA MERKEZ: Doğru Sayısı -->
+                <td data-label="Puan" class="align-right score-cell">${score.toFixed(2)}</td> <!-- EK BOŞLUK: align-right ve score-cell sınıfları kullanıldı -->
+                <td data-label="Sınıf Ortalaması" class="comparison-cell">${averageDisplay}</td>
+            </tr>`;
+      }).join('');
+
+      const html = `
+        <div class="student-info"><h3>${fullStudentData.studentName} - ${title} Sonuçları</h3></div>
+        ${statsHtml}
+        <div class="chart-container"><canvas id="resultsChart"></canvas></div>
+        <div class="result-table-container">
+          <table class="result-table">
+            <thead><tr><th>Sınav Adı</th><th>Tarih</th><th>Doğru Sayısı</th><th>Puan</th><th>Sınıf Ortalaması</th></tr></thead> 
+            <tbody>${examRows}</tbody>
+          </table>
+        </div>`;
+      studentDataContainer.innerHTML = html;
+      
+      const chartLabels = exams.map(exam => `${exam['Sınav Adı']} (${exam['Zaman Damgası'] || 'Tarihsiz'})`); 
+      const studentScores = exams.map(exam => {
+        if (exam['DogruSayisi'] === null) return null;
+        return (parseFloat(exam['DogruSayisi']) / 20) * 100;
+      });
+      const classAverageScores = exams.map(exam => {
+          if (exam['DogruSayisi'] === null) return null;
+          const classAverageCorrects = parseFloat(exam['SinifOrtalamasi']) || 0;
+          return (classAverageCorrects / 20) * 100;
+      });
+      
+      const ctx = document.getElementById('resultsChart').getContext('2d');
+      const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+      gradient.addColorStop(0, 'rgba(52, 152, 219, 0.5)');
+      gradient.addColorStop(1, 'rgba(52, 152, 219, 0)');
+
+      if (resultsChart) resultsChart.destroy();
+      resultsChart = new Chart(ctx, {
+        type: 'line', 
+        data: {
+          labels: chartLabels,
+          datasets: [{
+            label: 'Öğrenci Puanı', data: studentScores, backgroundColor: gradient,
+            borderColor: 'var(--primary)', borderWidth: 2, pointBackgroundColor: 'var(--primary)',
+            pointRadius: 4, tension: 0.4, fill: true,
+            spanGaps: false
+          }, {
+            label: 'Sınıf Ortalaması', data: classAverageScores,
+            borderColor: '#2ecc71', borderWidth: 2, pointBackgroundColor: '#2ecc71',
+            pointRadius: 4, tension: 0.4, fill: false, borderDash: [5, 5],
+            spanGaps: false
+          }]
+        },
+        options: {
+          scales: { y: { beginAtZero: true, max: 100 } },
+          plugins: { 
+            legend: { 
+              display: true, 
+              position: 'top',
+              align: 'end',
+              labels: {
+                  boxWidth: 12,
+                  padding: 20,
+                  font: {
+                      size: 14
+                  }
+              }
+            } 
+          },
+          responsive: true, maintainAspectRatio: false
+        }
+      });
+    }
+
+    searchButton.addEventListener('click', handleStudentSearch);
+    noInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleStudentSearch();
     });
-    
-    // Sayfa yüklendiğinde input alanına odaklan
-    window.onload = function() {
-      document.getElementById("noInput").focus();
-    };
-  </script>
+
+    backButton.onclick = goBack;
+    backButton.innerHTML = `<i class="fas fa-arrow-left"></i> Yeni Arama Yap`;
+</script>
 </body>
 </html>
-
-
-
-
