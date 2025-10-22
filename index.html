@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Öğrenci Takip Sistemi</title>
+  <title>MFA Öğrenci Gelişim Takip Sistemi</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -246,7 +246,7 @@
     /* İstatistik Kartları */
     .stats-container {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr); /* 2'den 3'e değiştirildi */
         gap: 10px;
         margin-bottom: 25px;
     }
@@ -327,20 +327,17 @@
         display: table-header-group;
       }
       .stats-container {
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr); /* 4'ten 3'e düşürüldü */
       }
       /* Desktop: Tablo başlıkları */
       .result-table th:nth-child(1), .result-table th:nth-child(2) { /* Sınav Adı, Tarih */
         text-align: left;
       }
-      .result-table th:nth-child(3) { /* Doğru Sayısı */
-        text-align: center;
-      }
-      .result-table th:nth-child(4) { /* Puan */
+      .result-table th:nth-child(3) { /* Puan */
         text-align: right; 
         padding-right: 35px; /* Başlığa da aynı boşluğu ver */
       }
-      .result-table th:nth-child(5) { /* Sınıf Ortalaması */
+      .result-table th:nth-child(4) { /* Sınıf Ortalaması */
         text-align: left; 
       }
     }
@@ -366,7 +363,7 @@
   <div class="container">
     <div id="search-page">
       <div class="header">
-        <h1>Öğrenci Takip Sistemi</h1>
+        <h1>MFA Öğrenci Gelişim Takip Sistemi</h1>
         <p>Tüm sınav sonuçlarını görmek için öğrenci numaranızı girin.</p>
       </div>
       <div class="input-card">
@@ -494,17 +491,17 @@
       const totalExams = exams.length;
       const attendedExamsData = exams.filter(exam => exam.DogruSayisi !== null);
       const attendedExamsCount = attendedExamsData.length;
-      const totalCorrects = attendedExamsData.reduce((sum, exam) => sum + parseFloat(exam.DogruSayisi), 0);
+      // DEĞİŞİKLİK: totalCorrects -> totalScores
+      const totalScores = attendedExamsData.reduce((sum, exam) => sum + parseFloat(exam.DogruSayisi), 0);
       
-      const averageCorrects = attendedExamsCount > 0 ? (totalCorrects / attendedExamsCount).toFixed(2) : '-';
-      // 20 soru varsayımı üzerinden ortalama puan
-      const averageScore = attendedExamsCount > 0 ? ((totalCorrects / attendedExamsCount) / 20 * 100).toFixed(2) : '-'; 
+      // DEĞİŞİKLİK: averageCorrects kaldırıldı, averageScore hesaplaması güncellendi
+      const averageScore = attendedExamsCount > 0 ? (totalScores / attendedExamsCount).toFixed(2) : '-'; 
 
+      // DEĞİŞİKLİK: İstatistik kartları 3'e düşürüldü
       const statsHtml = `
           <div class="stats-container">
               <div class="stat-card"><h4>Toplam Sınav</h4><p>${totalExams}</p></div>
               <div class="stat-card"><h4>Katıldığı Sınav</h4><p>${attendedExamsCount}</p></div>
-              <div class="stat-card"><h4>Doğru Ort.</h4><p>${averageCorrects}</p></div>
               <div class="stat-card"><h4>Puan Ort.</h4><p>${averageScore}</p></div>
           </div>
       `;
@@ -513,18 +510,20 @@
         const examTimestamp = exam['Zaman Damgası'] || '-'; // GAS'tan gelen Zaman Damgası
         
         if (exam['DogruSayisi'] === null) {
-            // Katılmadı durumunda, Sınav Adı ve Tarih sütunlarını koruyup, diğer 3 sütunu birleştiriyoruz.
+            // DEĞİŞİKLİK: colspan 3'ten 2'ye düşürüldü
             return `<tr>
                       <td data-label="Sınav Adı"><strong>${exam['Sınav Adı']}</strong></td>
                       <td data-label="Tarih">${examTimestamp}</td>
-                      <td colspan="3" class="not-attended">Katılmadı / Teslim Edilmedi</td>
+                      <td colspan="2" class="not-attended">Katılmadı / Teslim Edilmedi</td>
                     </tr>`;
         }
         
-        const correctAnswers = parseFloat(exam['DogruSayisi']) || 0;
-        const score = (correctAnswers / 20) * 100; // Puan hesaplama
-        const classAverageCorrects = parseFloat(exam['SinifOrtalamasi']) || 0;
-        const classAverageScore = (classAverageCorrects / 20) * 100;
+        // DEĞİŞİKLİK: correctAnswers ve (score / 20 * 100) hesaplaması kaldırıldı
+        const score = parseFloat(exam['DogruSayisi']) || 0; // DogruSayisi artık Puan
+        
+        // DEĞİŞİKLİK: classAverageCorrects ve (avg / 20 * 100) hesaplaması kaldırıldı
+        const classAverageScore = parseFloat(exam['SinifOrtalamasi']) || 0; // SinifOrtalamasi artık Puan Ort.
+        
         const difference = score - classAverageScore;
         
         let comparisonHtml = '';
@@ -536,18 +535,17 @@
             comparisonHtml = `<span class="status-icon neutral"><i class="fas fa-minus"></i></span>`;
         }
         
-        // YENİ Yapı: Sayı ve Ok ayrıldı
         const averageDisplay = `
             <span class="average-score-display">${classAverageScore.toFixed(2)}</span>
             <div class="comparison-icons">${comparisonHtml}</div>
         `;
 
+        // DEĞİŞİKLİK: "Doğru Sayısı" <td> etiketi kaldırıldı
         return `
             <tr>
                 <td data-label="Sınav Adı"><strong>${exam['Sınav Adı']}</strong></td>
                 <td data-label="Tarih">${examTimestamp}</td> 
-                <td data-label="Doğru Sayısı" class="align-center">${correctAnswers}</td> <!-- HİZALAMA MERKEZ: Doğru Sayısı -->
-                <td data-label="Puan" class="align-right score-cell">${score.toFixed(2)}</td> <!-- EK BOŞLUK: align-right ve score-cell sınıfları kullanıldı -->
+                <td data-label="Puan" class="align-right score-cell">${score.toFixed(2)}</td> <!-- Puan artık doğrudan 'score' değişkeninden geliyor -->
                 <td data-label="Sınıf Ortalaması" class="comparison-cell">${averageDisplay}</td>
             </tr>`;
       }).join('');
@@ -558,21 +556,26 @@
         <div class="chart-container"><canvas id="resultsChart"></canvas></div>
         <div class="result-table-container">
           <table class="result-table">
-            <thead><tr><th>Sınav Adı</th><th>Tarih</th><th>Doğru Sayısı</th><th>Puan</th><th>Sınıf Ortalaması</th></tr></thead> 
+            <!-- DEĞİŞİKLİK: "Doğru Sayısı" <th> etiketi kaldırıldı -->
+            <thead><tr><th>Sınav Adı</th><th>Tarih</th><th>Puan</th><th>Sınıf Ortalaması</th></tr></thead> 
             <tbody>${examRows}</tbody>
           </table>
         </div>`;
       studentDataContainer.innerHTML = html;
       
       const chartLabels = exams.map(exam => `${exam['Sınav Adı']} (${exam['Zaman Damgası'] || 'Tarihsiz'})`); 
+      
+      // DEĞİŞİKLİK: studentScores hesaplaması güncellendi
       const studentScores = exams.map(exam => {
         if (exam['DogruSayisi'] === null) return null;
-        return (parseFloat(exam['DogruSayisi']) / 20) * 100;
+        return parseFloat(exam['DogruSayisi']); // Doğrudan puanı al
       });
+      
+      // DEĞİŞİKLİK: classAverageScores hesaplaması güncellendi
       const classAverageScores = exams.map(exam => {
           if (exam['DogruSayisi'] === null) return null;
-          const classAverageCorrects = parseFloat(exam['SinifOrtalamasi']) || 0;
-          return (classAverageCorrects / 20) * 100;
+          const classAverageScore = parseFloat(exam['SinifOrtalamasi']) || 0;
+          return classAverageScore; // Doğrudan ortalama puanı al
       });
       
       const ctx = document.getElementById('resultsChart').getContext('2d');
@@ -628,4 +631,3 @@
 </script>
 </body>
 </html>
-
